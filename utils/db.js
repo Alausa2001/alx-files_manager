@@ -11,8 +11,7 @@ class DBClient {
   }
 
   isAlive() {
-    if (this.mongoClient.isConnected) return true;
-    return false;
+    return this.mongoClient.isConnected
   }
 
   async nbUsers() {
