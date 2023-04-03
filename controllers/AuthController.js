@@ -7,7 +7,7 @@ class AuthController {
   static async getConnect(req, res) {
     /* decode credentials */
     try {
-      const authHeader = req.headers('Authorization');
+      const authHeader = req.get('Authorization');
       const encodedCredentials = authHeader.split(' ')[1];
       const buffObj = Buffer.from(encodedCredentials, 'base64');
       const credentials = buffObj.toString('utf-8');
@@ -22,12 +22,13 @@ class AuthController {
         res.status(200).json({ token });
       }
     } catch (err) {
+      console.log(err);
       res.status(401).json({ error: 'Unauthorized' }).end();
     }
   }
 
   static async getDisconnect(req, res) {
-    const xToken = req.headers('X-Token');
+    const xToken = req.get('X-Token');
     const id = await redisClient.get(`auth_${xToken}`);
     if (!id) res.status(401).json({ error: 'Unauthorized' });
     else {
