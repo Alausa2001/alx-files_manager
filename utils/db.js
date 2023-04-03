@@ -27,6 +27,20 @@ class DBClient {
     const countFiles = this.files.countDocuments();
     return countFiles;
   }
+
+  async findUser(email) {
+    this.database = this.mongoClient.db();
+    this.users = this.database.collection('users');
+    const user = this.users.findOne({ email });
+    return user;
+  }
+
+  async saveUser(email, pwd) {
+    this.database = this.mongoClient.db();
+    this.users = this.database.collection('users');
+    const user = this.users.insert({ email, password: pwd });
+    return user;
+  }
 }
 
 const dbClient = new DBClient();
