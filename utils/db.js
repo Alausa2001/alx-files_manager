@@ -1,4 +1,4 @@
-import { MongoClient } from 'mongodb';
+import { MongoClient, ObjectId } from 'mongodb';
 
 class DBClient {
   constructor() {
@@ -32,6 +32,13 @@ class DBClient {
     this.database = this.mongoClient.db();
     this.users = this.database.collection('users');
     const user = this.users.findOne({ email });
+    return user;
+  }
+
+  async findId(id) {
+    this.database = this.mongoClient.db();
+    this.users = this.database.collection('users');
+    const user = await this.users.findOne({ _id: ObjectId(id) });
     return user;
   }
 

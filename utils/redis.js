@@ -18,7 +18,7 @@ class RedisClient {
     try {
       return (await getKey(key));
     } catch (err) {
-      return (`${err.message}`);
+      throw new Error();
     }
   }
 
