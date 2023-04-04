@@ -22,7 +22,7 @@ class FilesController {
       const { data } = req.body;
       if (!data && type !== 'folder') res.status(400).json({ error: 'Missing data' });
 
-      else if (parentId) {
+      if (parentId) {
         const parentExist = await dbClient.findFileById(parentId);
         // res.status(400).json({ error: parentExist });
         if (!parentExist) res.status(400).json({ error: 'Parent not found' });
