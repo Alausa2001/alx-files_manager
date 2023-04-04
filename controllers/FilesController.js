@@ -22,14 +22,16 @@ class FilesController {
       const { data } = req.body;
       if (!data && type !== 'folder') res.status(400).json({ error: 'Missing data' });
 
-      else if (type === 'folder') {
-        if (parentId !== 0) {
-          const parentExist = await dbClient.findFileById(parentId);
-          if (!parentExist) res.status(400).json({ error: 'Parent not found' });
-          else if (parentExist && parentExist.type !== 'folder') {
-            res.status(400).json({ error: 'Parent is not a folder' }).end();
-          }
+      else if (parentId) {
+        const parentExist = await dbClient.findFileById(parentId);
+        // res.status(400).json({ error: parentExist });
+        if (!parentExist) res.status(400).json({ error: 'Parent not found' });
+        else if (parentExist && parentExist.type !== 'folder') {
+          res.status(400).json({ error: 'Parent is not a folder' });
+          /* eslint-disable-next-line */
         }
+      }
+      if (type === 'folder') {
         const userId = user;
         const fileData = {
           name,
@@ -45,18 +47,16 @@ class FilesController {
         });
         /* eslint-disable-next-line */
       }
-      else if (type === 'image' || type === 'file') {
+      if (type === 'image' || type === 'file') {
         const folderPath = process.env.FOLDER_PATH || '/tmp/files_manager';
         const fileId = v4();
         const localPath = `${folderPath}/${fileId}`;
-
         const { data } = req.body;
         const content = Buffer.from(data, 'base64');
 
         if (!fs.existsSync(folderPath)) {
           fs.mkdirSync(folderPath);
         }
-
         fs.writeFile(localPath, content, { flag: 'a' }, (err) => {
           if (err) console.log(err);
         });
