@@ -22,11 +22,13 @@ class FilesController {
       const { data } = req.body;
       if (!data && type !== 'folder') res.status(400).json({ error: 'Missing data' });
 
-      else if (parentId !== 0 && type === 'folder') {
-        const parentExist = await dbClient.findFileById(parentId);
-        if (!parentExist) res.status(400).json({ error: 'Parent not found' });
-        else if (parentExist && parentExist.type !== 'folder') {
-          res.status(400).json({ error: 'Parent is not a folder' }).end();
+      else if (type === 'folder') {
+        if (parentId !== 0) {
+          const parentExist = await dbClient.findFileById(parentId);
+          if (!parentExist) res.status(400).json({ error: 'Parent not found' });
+          else if (parentExist && parentExist.type !== 'folder') {
+            res.status(400).json({ error: 'Parent is not a folder' }).end();
+          }
         }
         const userId = user;
         const fileData = {
@@ -43,7 +45,7 @@ class FilesController {
         });
         /* eslint-disable-next-line */
       }
-      else {
+      else if (type === 'image' || type === 'file') {
         const folderPath = process.env.FOLDER_PATH || '/tmp/files_manager';
         const fileId = v4();
         const localPath = `${folderPath}/${fileId}`;
