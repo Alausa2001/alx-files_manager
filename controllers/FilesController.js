@@ -116,11 +116,14 @@ class FilesController {
       res.status(401).json({ error: 'Unauthorized' });
       return;
     }
+
     const { parentId = 0, page } = req.query;
     if (!parentId) {
-      res.status(200).json([]);
+      const files = await dbClient.listFiles(parentId, page, 20);
+      res.status(200).json(files);
       return;
     }
+    // file
     // console.log(parentId);
     const files = await dbClient.listFiles(parentId, page, 20);
     res.status(200).json(files);
