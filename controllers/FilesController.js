@@ -19,20 +19,15 @@ class FilesController {
         res.status(400).json({ error: 'Missing type' });
         /* eslint-disable-next-line */
       }
+      const { data } = req.body;
+      if (!data && type !== 'folder') res.status(400).json({ error: 'Missing data' });
 
-      else if (type === 'file' || type === 'image') {
-        const { data } = req.body;
-        if (!data && type !== 'folder') res.status(400).json({ error: 'Missing data' });
-      }
-
-      if (parentId !== 0) {
+      else if (parentId !== 0 && type === 'folder') {
         const parentExist = await dbClient.findFileById(parentId);
         if (!parentExist) res.status(400).json({ error: 'Parent not found' });
         else if (parentExist && parentExist.type !== 'folder') {
-          res.status(400).json({ error: 'Parent is not a folder' });
+          res.status(400).json({ error: 'Parent is not a folder' }).end();
         }
-      }
-      if (type === 'folder') {
         const userId = user;
         const fileData = {
           name,
