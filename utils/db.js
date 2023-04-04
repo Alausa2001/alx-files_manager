@@ -62,6 +62,13 @@ class DBClient {
     const file = this.files.insertOne(data);
     return file;
   }
+
+  async listFiles(parenId, page, limit) {
+    this.database = this.mongoClient.db();
+    this.files = this.database.collection('files');
+    const file = this.files.find({ parentId: parenId }).limit(limit).skip(page * limit).toArray();
+    return file;
+  }
 }
 
 const dbClient = new DBClient();
