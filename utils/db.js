@@ -48,6 +48,20 @@ class DBClient {
     const user = this.users.insert({ email, password: pwd });
     return user;
   }
+
+  async findFileById(id) {
+    this.database = this.mongoClient.db();
+    this.files = this.database.collection('files');
+    const file = this.files.findOne({ _id: ObjectId(id) });
+    return file;
+  }
+
+  async saveFile(data) {
+    this.database = this.mongoClient.db();
+    this.files = this.database.collection('files');
+    const file = this.files.insertOne(data);
+    return file;
+  }
 }
 
 const dbClient = new DBClient();
