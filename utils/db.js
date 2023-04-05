@@ -52,14 +52,18 @@ class DBClient {
   async findFileById(id) {
     this.database = this.mongoClient.db();
     this.files = this.database.collection('files');
+    /*
     const projection = {
       projection: {
         id: '$_id', _id: 0, name: 1, userId: 1, type: 1, isPublic: 1, parentId: 1,
       },
     };
-    const file = this.files.find({ _id: ObjectId(id) }, projection);
+    */
+    const file = this.files.find({ _id: ObjectId(id) });
     return file;
   }
+
+  // async findFile
 
   async saveFile(data) {
     this.database = this.mongoClient.db();
@@ -68,7 +72,7 @@ class DBClient {
     return file;
   }
 
-  async listFiles(parenId = 0, page = 0, limit) {
+  async listAllFiles(parenId = 0, page = 0, limit) {
     this.database = this.mongoClient.db();
     this.files = this.database.collection('files');
     // const id = this.files.findOne({ userId: id });
