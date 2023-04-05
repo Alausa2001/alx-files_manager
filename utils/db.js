@@ -82,12 +82,12 @@ class DBClient {
       },
     };
 
-    if (parenId === 0) {
+    if (!parenId) {
       const userFiles = this.files.find({ userId: user }, projection)
         .limit(limit).skip(page * limit).toArray();
       return userFiles;
     }
-    const file = this.files.find({ parentId: parenId }, projection)
+    const file = this.files.find({ parentId: parenId, userId: user }, projection)
       .limit(limit).skip(page * limit).toArray();
     return file;
   }
