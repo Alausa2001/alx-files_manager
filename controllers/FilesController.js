@@ -99,6 +99,14 @@ class FilesController {
       return;
     }
 
+    /* trying to pinpoint some errors - with next 5 lines */
+    const id = user;
+    const idExists = await dbClient.findId(id);
+    if (!idExists) {
+      res.status(401).json({ error: 'Unauthorized' });
+      return;
+    }
+
     const fileId = req.params.id;
     // console.log(fileId);
     const doc = await dbClient.findFileById(fileId);
@@ -113,6 +121,14 @@ class FilesController {
     const token = req.get('X-Token');
     const user = await redisClient.get(`auth_${token}`);
     if (!user) {
+      res.status(401).json({ error: 'Unauthorized' });
+      return;
+    }
+
+    /* trying to pinpoint some errors - with next 5 lines */
+    const id = user;
+    const idExists = await dbClient.findId(id);
+    if (!idExists) {
       res.status(401).json({ error: 'Unauthorized' });
       return;
     }
@@ -136,6 +152,15 @@ class FilesController {
       res.status(401).json({ error: 'Unauthorized' });
       return;
     }
+
+    /* trying to pinpoint some errors - with next 5 lines */
+    const iid = user;
+    const idExists = await dbClient.findId(iid);
+    if (!idExists) {
+      res.status(401).json({ error: 'Unauthorized' });
+      return;
+    }
+
     const fileId = req.params.id;
     const userHasFile = await dbClient.userHasFile(fileId, user);
     if (!userHasFile) {
@@ -154,6 +179,13 @@ class FilesController {
     const token = req.get('X-Token');
     const user = await redisClient.get(`auth_${token}`);
     if (!user) {
+      res.status(401).json({ error: 'Unauthorized' });
+      return;
+    }
+    /* trying to pinpoint some errors - with next 5 lines */
+    const iid = user;
+    const idExists = await dbClient.findId(iid);
+    if (!idExists) {
       res.status(401).json({ error: 'Unauthorized' });
       return;
     }
