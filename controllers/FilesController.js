@@ -146,6 +146,7 @@ class FilesController {
     updatedDoc = await dbClient.userHasFile(fileId, user);
     const id = updatedDoc._id;
     delete updatedDoc._id;
+    delete updatedDoc.localPath;
     res.status(200).json({ id, ...updatedDoc });
   }
 
@@ -167,6 +168,7 @@ class FilesController {
     updatedDoc = await dbClient.userHasFile(fileId, user);
     const id = updatedDoc._id;
     delete updatedDoc._id;
+    delete updatedDoc.localPath;
     res.status(200).json({ id, ...updatedDoc });
   }
 }
