@@ -117,15 +117,15 @@ class FilesController {
       return;
     }
 
-    const { parentId = 0, page } = req.query;
+    const { parentId = 0, page = 0 } = req.query;
     if (!parentId) {
-      const files = await dbClient.listFiles(parentId, page, 20);
+      const files = await dbClient.listFiles(parentId, page, 20, user);
       res.status(200).json(files);
       return;
     }
     // file
     // console.log(parentId);
-    const files = await dbClient.listFiles(parentId, page, 20);
+    const files = await dbClient.listFiles(parentId, page, 20, user);
     res.status(200).json(files);
   }
 }
