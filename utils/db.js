@@ -24,14 +24,14 @@ class DBClient {
   async nbFiles() {
     this.database = this.mongoClient.db();
     this.files = this.database.collection('files');
-    const countFiles = this.files.countDocuments();
+    const countFiles = await this.files.countDocuments();
     return countFiles;
   }
 
   async findUser(email) {
     this.database = this.mongoClient.db();
     this.users = this.database.collection('users');
-    const user = this.users.findOne({ email });
+    const user = await this.users.findOne({ email });
     return user;
   }
 
@@ -45,7 +45,7 @@ class DBClient {
   async saveUser(email, pwd) {
     this.database = this.mongoClient.db();
     this.users = this.database.collection('users');
-    const user = this.users.insert({ email, password: pwd });
+    const user = await this.users.insert({ email, password: pwd });
     return user;
   }
 
@@ -59,7 +59,7 @@ class DBClient {
       },
     };
     /* eslint-disable-next-line */
-    const file = this.files.findOne({ _id: ObjectId(id) }, projection)
+    const file = await this.files.findOne({ _id: ObjectId(id) }, projection)
     return file;
   }
 
@@ -68,7 +68,7 @@ class DBClient {
   async saveFile(data) {
     this.database = this.mongoClient.db();
     this.files = this.database.collection('files');
-    const file = this.files.insertOne(data);
+    const file = await this.files.insertOne(data);
     return file;
   }
 
@@ -87,7 +87,7 @@ class DBClient {
         .limit(limit).skip(page * limit).toArray();
       return userFiles;
     }
-    const file = this.files.find({ parentId: parenId, userId: user }, projection)
+    const file = await this.files.find({ parentId: parenId, userId: user }, projection)
       .limit(limit).skip(page * limit).toArray();
     return file;
   }
@@ -96,14 +96,14 @@ class DBClient {
     this.database = this.mongoClient.db();
     this.files = this.database.collection('files');
 
-    const doc = this.files.findOne({ _id: ObjectId(file), userId: user });
+    const doc = await this.files.findOne({ _id: ObjectId(file), userId: user });
     return doc;
   }
 
   async updateDoc(match, update) {
     this.database = this.mongoClient.db();
     this.files = this.database.collection('files');
-    const doc = this.files.updateOne(match, { $set: update });
+    const doc = await this.files.updateOne(match, { $set: update });
     return doc;
   }
 }

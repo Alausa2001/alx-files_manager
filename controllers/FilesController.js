@@ -1,4 +1,5 @@
 import fs from 'fs';
+import mime from 'mime-types';
 import { v4 } from 'uuid';
 import redisClient from '../utils/redis';
 import dbClient from '../utils/db';
@@ -202,6 +203,44 @@ class FilesController {
     delete updatedDoc._id;
     delete updatedDoc.localPath;
     res.status(200).json({ id, ...updatedDoc });
+  }
+
+  static async getFile(req, res) {
+    const token = req.get('X-Token');
+    const user = await redisClient.get(`auth_${token}`);
+
+    const fileId = req.params.id;
+    const fileExists = await dbClient.findFileById(fileId);
+
+    if (!fileExists) {
+      res.status(404).json({ error: 'Not found' });
+      return;
+    }
+
+    if ((!user || fileExists.isPublic === false) && fileExists.userId !== user) {
+      res.status(404).json({ error: 'Not found' });
+      return;
+    }
+
+    if (fileExists.type === 'folder') {
+      res.status(400).json({ error: "A folder doesn't have content" });
+      return;
+    }
+    /* needed a fnc to return file path */
+    const file = await dbClient.userHasFile(fileId, user);
+
+    if (!fs.existsSync(file.localPath)) {
+      res.status(404).json({ error: 'Not found' });
+      return;
+    }
+
+    const contentType = mime.contentType(fileExists.name);
+    try {
+      const data = await fs.promises.readFile(file.localPath);
+      res.header('Content-Type', contentType).status(200).send(data);
+    } catch (err) {
+      res.status(404).json({ error: 'Not found' });
+    }
   }
 }
 
