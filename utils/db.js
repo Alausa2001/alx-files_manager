@@ -59,7 +59,7 @@ class DBClient {
       },
     };
     */
-    const file = this.files.find({ _id: ObjectId(id) });
+    const file = this.files.findOne({ _id: ObjectId(id) });
     return file;
   }
 
