@@ -91,6 +91,21 @@ class DBClient {
       .limit(limit).skip(page * limit).toArray();
     return file;
   }
+
+  async userHasFile(file, user) {
+    this.database = this.mongoClient.db();
+    this.files = this.database.collection('files');
+
+    const doc = this.files.findOne({ _id: ObjectId(file), userId: user });
+    return doc;
+  }
+
+  async updateDoc(match, update) {
+    this.database = this.mongoClient.db();
+    this.files = this.database.collection('files');
+    const doc = this.files.updateOne(match, { $set: update });
+    return doc;
+  }
 }
 
 const dbClient = new DBClient();
