@@ -57,7 +57,7 @@ class DBClient {
         id: '$_id', _id: 0, name: 1, userId: 1, type: 1, isPublic: 1, parentId: 1,
       },
     };
-    const file = this.files.findOne({ _id: ObjectId(id) }, projection);
+    const file = this.files.find({ _id: ObjectId(id) }, projection);
     return file;
   }
 
