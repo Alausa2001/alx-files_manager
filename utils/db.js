@@ -52,14 +52,14 @@ class DBClient {
   async findFileById(id) {
     this.database = this.mongoClient.db();
     this.files = this.database.collection('files');
-    /*
+
     const projection = {
       projection: {
         id: '$_id', _id: 0, name: 1, userId: 1, type: 1, isPublic: 1, parentId: 1,
       },
     };
-    */
-    const file = this.files.findOne({ _id: ObjectId(id) });
+
+    const file = this.files.findOne({ _id: ObjectId(id) }) || this.files.findOne({ parentId: id }, projection);
     return file;
   }
 
